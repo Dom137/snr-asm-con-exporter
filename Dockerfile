@@ -26,4 +26,4 @@ RUN yum -y install oracle-nodejs-release-el7 oracle-instantclient-release-el7 &&
 
 ENV NODE_PATH=/usr/lib/node_modules
 
-CMD ["node", "src/app.js"]
+CMD ["node", "app.js"]
