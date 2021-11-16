@@ -176,36 +176,36 @@ const token = Buffer.from(`${ASM_USER}:${ASM_PASS}`, 'utf8').toString('base64');
 /***************** END CONFIGURATION *******************/
 
 //schedule a periodic run
-// cron.schedule(SCHEDULE || '* * * * *', () => {
-//   console.log(getCurrentDate() + ' Looking for new data in inventory database...');
-//   console.log(getCurrentDate() + ' Collecting current ressources from ASM, using filter on type <ASM_ENTITY_TYPE>');
-//   entitiesInAsm = {};
-//   connectivityData = [];
-//   asmEntriesToCreate = {};
-//   getFromAsm()
-//     .then((data) => {
-//       entitiesInAsm = data;
+cron.schedule(SCHEDULE || '* * * * *', () => {
+  console.log(getCurrentDate() + ' Looking for new data in inventory database...');
+  console.log(getCurrentDate() + ' Collecting current ressources from ASM, using filter on type <ASM_ENTITY_TYPE>');
+  entitiesInAsm = {};
+  connectivityData = [];
+  asmEntriesToCreate = {};
+  getFromAsm()
+    .then((data) => {
+      entitiesInAsm = data;
 
-//       collectConnectivityData().then((conData) => {
-//         connectivityData = conData;
+      collectConnectivityData().then((conData) => {
+        connectivityData = conData;
 
-//         processAsmAndConnectivityData();
-//       });
-//     })
-//     .catch((err) => console.log(err));
-// });
+        processAsmAndConnectivityData();
+      });
+    })
+    .catch((err) => console.log(err));
+});
 
-getFromAsm()
-  .then((data) => {
-    entitiesInAsm = data;
+// getFromAsm()
+//   .then((data) => {
+//     entitiesInAsm = data;
 
-    collectConnectivityData().then((conData) => {
-      connectivityData = conData;
+//     collectConnectivityData().then((conData) => {
+//       connectivityData = conData;
 
-      processAsmAndConnectivityData();
-    });
-  })
-  .catch((err) => console.log(err));
+//       processAsmAndConnectivityData();
+//     });
+//   })
+//   .catch((err) => console.log(err));
 
 async function processAsmAndConnectivityData() {
   console.log(getCurrentDate() + ' Processing all data...');
