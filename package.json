@@ -4,8 +4,8 @@
   "description": "Sends historical event data to Loki",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon src/app.js",
-    "start": "node src/app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "author": "@OpenAdvice",
   "license": "Apache-2.0",
