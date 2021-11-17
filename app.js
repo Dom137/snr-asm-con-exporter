@@ -23,7 +23,7 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 let SCHEDULE = process.env.SCHEDULE;
 if (!SCHEDULE) {
-  SCHEDULE = '* * * * *';
+  SCHEDULE = '*/16 * * * *';
 }
 
 let CON_DB_QUERY_FIELDS = process.env.CON_DB_QUERY_FIELDS;
@@ -176,7 +176,7 @@ const token = Buffer.from(`${ASM_USER}:${ASM_PASS}`, 'utf8').toString('base64');
 /***************** END CONFIGURATION *******************/
 
 //schedule a periodic run
-cron.schedule(SCHEDULE || '* * * * *', () => {
+cron.schedule(SCHEDULE || '*/5 * * * *', () => {
   console.log(getCurrentDate() + ' Looking for new data in inventory database...');
   console.log(getCurrentDate() + ' Collecting current ressources from ASM, using filter on type <ASM_ENTITY_TYPE>');
   entitiesInAsm = {};
@@ -374,6 +374,7 @@ async function getFromAsm() {
           },
           (error) => {
             console.log(getCurrentDate() + ' Error collection data from ASM.');
+            console.log(error);
             if (error && error.response && error.response.data) {
               const errorData = error.response.data;
               if (errorData) {
@@ -385,7 +386,7 @@ async function getFromAsm() {
           }
         );
     } catch (err) {
-      console.log(getCurrentDate() + ' Caught an exception while collection data from ASM!');
+      console.log(getCurrentDate() + ' Caught an exception while collecting data from ASM!');
       console.error(err);
       reject('An Exception occurred while collection data from ASM. Please see previous error messages.');
     }
@@ -540,7 +541,7 @@ async function deleteFromAsm(uniqueId, asmInternalId) {
 
 async function deleteReferenceFromAsm(eleAsmId) {
   return new Promise(async function (resolve, reject) {
-    //console.log(getCurrentDate() + ` Deleting references from ressource with ASM id ${eleAsmId}`);
+    console.log(getCurrentDate() + ` Deleting references from ressource with ASM id ${eleAsmId}`);
     try {
       axios
         .delete(ASM_TOPO_URL + ASM_EP_RES + '/' + encodeURIComponent(eleAsmId) + ASM_EP_REF_DEL, {
@@ -554,16 +555,17 @@ async function deleteReferenceFromAsm(eleAsmId) {
             if (response.status && response.status >= 400) {
               console.error(
                 getCurrentDate() +
-                  ` Received an error response while delete a reference from ASM. Ressource: ${eleAsmId}`
+                  ` Received an error response while deleting a reference from ASM. Ressource: ${eleAsmId}`
               );
-              reject(`Received an error response while delete a reference from ASM. Ressource: ${eleAsmId}`);
+              reject(`Received an error response while deleting a reference from ASM. Ressource: ${eleAsmId}`);
             } else {
-              //console.log(getCurrentDate() + ' Successfully deleted refernece from ASM.');
+              console.log(getCurrentDate() + ' Successfully deleted refernece from ASM.');
               resolve();
             }
           },
           (error) => {
             console.error(getCurrentDate() + ' Error deleting a reference from ASM:');
+            console.log(error);
             if (error && error.response && error.response.data) {
               const errorData = error.response.data;
               if (errorData) {
